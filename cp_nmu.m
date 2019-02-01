@@ -115,9 +115,9 @@ for iter = 1:maxiters
     for n = dimorder(1:end)
 
         % Compute the matrix of coefficients for linear system
-        Y = ones(R,R);
-        for i = [1:n-1,n+1:N]
-            Y = Y .* (U{i}'*U{i});
+        Y = ones(R,R); % diagonal ones matrix, rest zero
+        for i = [1:n-1,n+1:N] # all but the current dimension
+            Y = Y .* (U{i}'*U{i}); % Y = U[n] * wTw
         end
         Y = U{n} * Y;
 
@@ -127,7 +127,7 @@ for iter = 1:maxiters
         % Calculate Unew = X_(n) * khatrirao(all U except n, 'r').
         tmp = mttkrp(X,U,n) + epsilon;
 
-        % Update unknowns
+        % Update unknowns. U(n+1) = U(n)*tmp/Y
         Unew = Unew .* tmp;
         Unew = Unew ./ (Y + epsilon);
 
